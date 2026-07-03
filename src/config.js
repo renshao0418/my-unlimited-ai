@@ -13,7 +13,7 @@ export const DEFAULT_MODEL = "z-ai/glm-5.1";
 export const MODELS = [
   { id: "meta/llama-3.3-70b-instruct", label: "llama3.3-70b", persona: 1 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 2 },
-  { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", persona: 3 },
+  { id: "deepseek-ai/deepseek-v4-flash", label: "deepseek-v4-flash", persona: 3 },
 ];
 
 // 内置人物模板 #1（glm-4.7-flash）——不会下发到网页
