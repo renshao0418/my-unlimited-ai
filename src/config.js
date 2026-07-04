@@ -7,12 +7,12 @@
 export const CHAT_PASSWORD = "123456";
 
 // 默认模型
-export const DEFAULT_MODEL = "z-ai/glm-5.1";
+export const DEFAULT_MODEL = "google/diffusiongemma-26b-a4b-it";
 
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "diffusiongemma", persona: 1 },
-  { id: "google/gemma-4-31b-it", label: "minimax-m3", persona: 2 },
+  { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", persona: 2 },
   { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", persona: 3 },
 ];
 
