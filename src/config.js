@@ -12,7 +12,7 @@ export const DEFAULT_MODEL = "z-ai/glm-5.1";
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "diffusiongemma", persona: 1 },
-  { id: "minimaxai/minimax-m3", label: "minimax-m3", persona: 2 },
+  { id: "google/gemma-4-31b-it", label: "minimax-m3", persona: 2 },
   { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", persona: 3 },
 ];
 
