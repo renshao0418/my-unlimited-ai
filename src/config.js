@@ -11,7 +11,7 @@ export const DEFAULT_MODEL = "z-ai/glm-5.1";
 
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
-  { id: "meta/llama-3.3-70b-instruct", label: "llama3.3-70b", persona: 1 },
+  { id: "qwen/qwen3.5-122b-a10b", label: "qwen3.5", persona: 1 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 2 },
   { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", persona: 3 },
 ];
