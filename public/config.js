@@ -4,6 +4,6 @@
 window.APP_MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "diffusiongemma" },
   { id: "meta/llama-3.1-8b-instruct", label: "llama-3.1-8b-instruct" },
-  { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro" },
+  { id: "moonshotai/kimi-k2.6", label: "kimi-k2.6" },
 ];
 window.APP_DEFAULT_MODEL = "google/diffusiongemma-26b-a4b-it";
