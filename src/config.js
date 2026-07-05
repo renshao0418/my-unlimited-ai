@@ -13,7 +13,7 @@ export const DEFAULT_MODEL = "google/diffusiongemma-26b-a4b-it";
 export const MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "diffusiongemma", persona: 1 },
   { id: "meta/llama-3.1-8b-instruct", label: "llama-3.1-8b-instruct", persona: 2 },
-  { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", persona: 3 },
+  { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra-550b-a55b", persona: 3 },
 ];
 
 // 内置人物模板 #1（glm-4.7-flash）——不会下发到网页
