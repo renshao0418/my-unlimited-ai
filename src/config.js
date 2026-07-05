@@ -12,7 +12,7 @@ export const DEFAULT_MODEL = "google/diffusiongemma-26b-a4b-it";
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "diffusiongemma", persona: 1 },
-  { id: "stepfun-ai/step-3.5-flash", label: "step-3.5-flash", persona: 2 },
+  { id: "openai/gpt-oss-120b"", label: "gpt-oss-120b"", persona: 2 },
   { id: "deepseek-ai/deepseek-v4-pro", label: "deepseek-v4-pro", persona: 3 },
 ];
 
