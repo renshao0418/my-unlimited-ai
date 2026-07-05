@@ -490,9 +490,12 @@
       carryOver = combined.endsWith("\n") ? "" : (lines.pop() || "");
 
       for (const line of lines) {
-        if (!line.startsWith("data: ")) continue;
+        // SSE 兼容 data: 与 data（含 / 不含 冒号后可选空格；同时兜住 \r 行尾）
+        const trimmedLine = line.replace(/\r$/, "");
+        if (!trimmedLine.startsWith("data:")) continue;
 
-        const jsonStr = line.slice(6).trim(); // 比 replace 更高效
+        // 先切 "data:" 5 个字符，再 trim() 掉可选空格 → 同时兼容 data:{...} 与 data: {...}
+        const jsonStr = trimmedLine.slice(5).trim();
         if (!jsonStr || jsonStr === "[DONE]") continue;
 
         try {
@@ -507,8 +510,37 @@
               requestAnimationFrame(flushText);
             }
           }
-        } catch {}
+        } catch (err) {
+          // 解析失败不再静默吞掉，打日志便于排查漏字
+          console.warn("[SSE] JSON parse failed, skipped a line.", {
+            linePrefix: trimmedLine.slice(0, 48),
+            rawLen: trimmedLine.length,
+            err: err?.message || String(err)
+          });
+        }
       }
+    }
+
+    // 循环结束后如果还有未以换行结尾的残留，也再尝试解析一次（避免尾部被截断导致丢字）
+    if (carryOver) {
+      const trimmedLine = carryOver.replace(/\r$/, "");
+      if (trimmedLine.startsWith("data:")) {
+        const jsonStr = trimmedLine.slice(5).trim();
+        if (jsonStr && jsonStr !== "[DONE]") {
+          try {
+            const parsed = JSON.parse(jsonStr);
+            if (parsed.usage) exactUsage = parsed.usage;
+            const delta = parsed.choices?.[0]?.delta?.content;
+            if (delta) pendingText += delta;
+          } catch (err) {
+            console.warn("[SSE] Tail carryOver parse skipped.", {
+              linePrefix: trimmedLine.slice(0, 48),
+              err: err?.message || String(err)
+            });
+          }
+        }
+      }
+      carryOver = "";
     }
 
     flushText();
