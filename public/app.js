@@ -463,33 +463,16 @@
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
 
-    let pendingText = "";
-    let isScheduled = false;
+    let full = "";
+    let exactUsage = null;
     let carryOver = "";
-    let flushTimeoutId = null;
-
-    const flushText = () => {
-      if (flushTimeoutId) {
-        clearTimeout(flushTimeoutId);
-        flushTimeoutId = null;
-      }
-      if (pendingText) {
-        full += pendingText;
-        aiRow.bubble.textContent = full;
-        pendingText = "";
-      }
-      isScheduled = false;
-    };
-
-    const scheduleFlush = () => {
-      if (!isScheduled) {
-        isScheduled = true;
-        requestAnimationFrame(flushText);
-        flushTimeoutId = setTimeout(flushText, 50);
-      }
-    };
+    let flushRafId = null;
 
     const outStartMs = performance.now();
+
+    const doFlush = () => {
+      flushRafId = null;
+    };
 
     while (true) {
       const { done, value } = await reader.read();
@@ -514,8 +497,11 @@
 
           const delta = parsed.choices?.[0]?.delta?.content;
           if (delta) {
-            pendingText += delta;
-            scheduleFlush();
+            full += delta;
+            aiRow.bubble.textContent = full;
+            if (!flushRafId) {
+              flushRafId = requestAnimationFrame(doFlush);
+            }
           }
         } catch (err) {
           console.warn("[SSE] JSON parse failed, skipped a line.", {
@@ -541,7 +527,10 @@
             const parsed = JSON.parse(jsonStr);
             if (parsed.usage) exactUsage = parsed.usage;
             const delta = parsed.choices?.[0]?.delta?.content;
-            if (delta) pendingText += delta;
+            if (delta) {
+              full += delta;
+              aiRow.bubble.textContent = full;
+            }
           } catch (err) {
             console.warn("[SSE] Tail carryOver parse skipped.", {
               linePrefix: trimmedLine.slice(0, 48),
@@ -553,7 +542,10 @@
       carryOver = "";
     }
 
-    flushText();
+    if (flushRafId) {
+      cancelAnimationFrame(flushRafId);
+      flushRafId = null;
+    }
 
     const outEndMs = performance.now();
     session.push({ role: "assistant", content: full });
