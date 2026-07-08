@@ -466,14 +466,27 @@
     let pendingText = "";
     let isScheduled = false;
     let carryOver = "";
+    let flushTimeoutId = null;
 
     const flushText = () => {
+      if (flushTimeoutId) {
+        clearTimeout(flushTimeoutId);
+        flushTimeoutId = null;
+      }
       if (pendingText) {
         full += pendingText;
         aiRow.bubble.textContent = full;
         pendingText = "";
       }
       isScheduled = false;
+    };
+
+    const scheduleFlush = () => {
+      if (!isScheduled) {
+        isScheduled = true;
+        requestAnimationFrame(flushText);
+        flushTimeoutId = setTimeout(flushText, 50);
+      }
     };
 
     const outStartMs = performance.now();
@@ -486,15 +499,12 @@
       const combined = carryOver + chunk;
       const lines = combined.split("\n");
 
-      // 最后一段不完整，保留到下一次
       carryOver = combined.endsWith("\n") ? "" : (lines.pop() || "");
 
       for (const line of lines) {
-        // SSE 兼容 data: 与 data（含 / 不含 冒号后可选空格；同时兜住 \r 行尾）
         const trimmedLine = line.replace(/\r$/, "");
         if (!trimmedLine.startsWith("data:")) continue;
 
-        // 先切 "data:" 5 个字符，再 trim() 掉可选空格 → 同时兼容 data:{...} 与 data: {...}
         const jsonStr = trimmedLine.slice(5).trim();
         if (!jsonStr || jsonStr === "[DONE]") continue;
 
@@ -505,13 +515,9 @@
           const delta = parsed.choices?.[0]?.delta?.content;
           if (delta) {
             pendingText += delta;
-            if (!isScheduled) {
-              isScheduled = true;
-              requestAnimationFrame(flushText);
-            }
+            scheduleFlush();
           }
         } catch (err) {
-          // 解析失败不再静默吞掉，打日志便于排查漏字
           console.warn("[SSE] JSON parse failed, skipped a line.", {
             linePrefix: trimmedLine.slice(0, 48),
             rawLen: trimmedLine.length,
@@ -521,7 +527,11 @@
       }
     }
 
-    // 循环结束后如果还有未以换行结尾的残留，也再尝试解析一次（避免尾部被截断导致丢字）
+    const tailChunk = decoder.decode();
+    if (tailChunk) {
+      carryOver += tailChunk;
+    }
+
     if (carryOver) {
       const trimmedLine = carryOver.replace(/\r$/, "");
       if (trimmedLine.startsWith("data:")) {
