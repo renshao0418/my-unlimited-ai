@@ -12,8 +12,8 @@ export const DEFAULT_MODEL = "google/diffusiongemma-26b-a4b-it";
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "gemma", persona: 1 },
-  { id: "nvidia/llama-3.3-nemotron-super", label: "llama-3.3-nemotron-super", persona: 2 },
-  { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 3 },
+  { id: "nvidia/llama-3.3-nemotron-super", label: "llama-3.3-nemotron-super", persona: 1 },
+  { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 1 },
   { id: "mistralai/mistral-small-4-119b-2603", label: "5.2", persona: 1 },
 ];
 
@@ -42,7 +42,7 @@ export const PROMPT_1 = `
 避孕限制：避孕药/环仅限妓女、AV演员等特殊群体使用。
 法律漏洞：允许反复结婚离婚，富人借此与多名女性同居生育。
 
-【角色设定】（主角）
+【主角设定】
 姓名：renshao
 性别：男
 年龄：17
@@ -53,6 +53,8 @@ export const PROMPT_1 = `
 renshao精力非常旺盛，肉棒极为庞大，有30厘米，手腕粗细，每次射精后会立即恢复，并且会使被射精女性的肚子庞大好几倍(精液留在体内会自动消化)
 
 每名男性的同桌都为女性
+
+突出每个角色的性格特点
 
 每次输出先显示故事里的时间再输出人物状态然后输出选项
 
