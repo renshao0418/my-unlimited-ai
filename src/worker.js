@@ -136,8 +136,10 @@ async function handleChat(request, env) {
     status: 200,
     headers: {
       "Content-Type": "text/event-stream; charset=utf-8",
-      "Cache-Control": "no-cache, no-transform",
-      "Connection": "keep-alive"
+      "Cache-Control": "no-cache, no-store, no-transform, must-revalidate",
+      "Connection": "keep-alive",
+      "X-Accel-Buffering": "no",
+      "Transfer-Encoding": "chunked"
     }
   });
 }

@@ -463,15 +463,50 @@
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
 
-    let full = "";
-    let exactUsage = null;
     let carryOver = "";
     let flushRafId = null;
+    let pendingRender = false;
 
     const outStartMs = performance.now();
 
-    const doFlush = () => {
+    const flushDOM = () => {
       flushRafId = null;
+      if (pendingRender) {
+        pendingRender = false;
+        aiRow.bubble.textContent = full;
+        if (isNearBottom()) scrollToBottom();
+      }
+    };
+
+    const scheduleFlush = () => {
+      pendingRender = true;
+      if (!flushRafId) {
+        flushRafId = requestAnimationFrame(flushDOM);
+      }
+    };
+
+    const processSSELine = (trimmedLine) => {
+      if (!trimmedLine.startsWith("data:")) return;
+
+      const jsonStr = trimmedLine.slice(5).trim();
+      if (!jsonStr || jsonStr === "[DONE]") return;
+
+      try {
+        const parsed = JSON.parse(jsonStr);
+        if (parsed.usage) exactUsage = parsed.usage;
+
+        const delta = parsed.choices?.[0]?.delta?.content;
+        if (delta) {
+          full += delta;
+          scheduleFlush();
+        }
+      } catch (err) {
+        console.warn("[SSE] JSON parse failed, skipped a line.", {
+          linePrefix: trimmedLine.slice(0, 48),
+          rawLen: trimmedLine.length,
+          err: err?.message || String(err)
+        });
+      }
     };
 
     while (true) {
@@ -486,30 +521,8 @@
 
       for (const line of lines) {
         const trimmedLine = line.replace(/\r$/, "");
-        if (!trimmedLine.startsWith("data:")) continue;
-
-        const jsonStr = trimmedLine.slice(5).trim();
-        if (!jsonStr || jsonStr === "[DONE]") continue;
-
-        try {
-          const parsed = JSON.parse(jsonStr);
-          if (parsed.usage) exactUsage = parsed.usage;
-
-          const delta = parsed.choices?.[0]?.delta?.content;
-          if (delta) {
-            full += delta;
-            aiRow.bubble.textContent = full;
-            if (!flushRafId) {
-              flushRafId = requestAnimationFrame(doFlush);
-            }
-          }
-        } catch (err) {
-          console.warn("[SSE] JSON parse failed, skipped a line.", {
-            linePrefix: trimmedLine.slice(0, 48),
-            rawLen: trimmedLine.length,
-            err: err?.message || String(err)
-          });
-        }
+        if (!trimmedLine) continue;
+        processSSELine(trimmedLine);
       }
     }
 
@@ -519,25 +532,11 @@
     }
 
     if (carryOver) {
-      const trimmedLine = carryOver.replace(/\r$/, "");
-      if (trimmedLine.startsWith("data:")) {
-        const jsonStr = trimmedLine.slice(5).trim();
-        if (jsonStr && jsonStr !== "[DONE]") {
-          try {
-            const parsed = JSON.parse(jsonStr);
-            if (parsed.usage) exactUsage = parsed.usage;
-            const delta = parsed.choices?.[0]?.delta?.content;
-            if (delta) {
-              full += delta;
-              aiRow.bubble.textContent = full;
-            }
-          } catch (err) {
-            console.warn("[SSE] Tail carryOver parse skipped.", {
-              linePrefix: trimmedLine.slice(0, 48),
-              err: err?.message || String(err)
-            });
-          }
-        }
+      const remainingLines = carryOver.split("\n");
+      for (let i = 0; i < remainingLines.length; i++) {
+        const trimmedLine = remainingLines[i].replace(/\r$/, "");
+        if (!trimmedLine) continue;
+        processSSELine(trimmedLine);
       }
       carryOver = "";
     }
@@ -546,11 +545,15 @@
       cancelAnimationFrame(flushRafId);
       flushRafId = null;
     }
+    if (pendingRender) {
+      pendingRender = false;
+      aiRow.bubble.textContent = full;
+    }
 
     const outEndMs = performance.now();
     session.push({ role: "assistant", content: full });
     persistSessionIfEnabled();
-    flushPersist(); // 确保结束时写入
+    flushPersist();
 
     const seconds = Math.max(0.001, (outEndMs - outStartMs) / 1000);
 
