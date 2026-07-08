@@ -11,7 +11,7 @@ export const DEFAULT_MODEL = "google/diffusiongemma-26b-a4b-it";
 
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
-  { id: "google/diffusiongemma-26b-a4b-it", label: "diffusiongemma", persona: 1 },
+  { id: "google/diffusiongemma-26b-a4b-it", label: "gemma", persona: 1 },
   { id: "nvidia/llama-3.3-nemotron-super", label: "llama-3.3-nemotron-super", persona: 2 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 3 },
 ];
