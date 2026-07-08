@@ -422,7 +422,7 @@
 
     const inEst = estimateTokens(text);
     totalInEstimate += inEst;
-    userRow.stats.textContent = `Input(估算): ≈${inEst} | Total In(估算): ≈${totalInEstimate}`;
+    userRow.stats.textContent = `输入(估算): ≈${inEst} | 累计输入(估算): ≈${totalInEstimate}`;
 
     session.push({ role: "user", content: text });
     currentUserMsgIndex = -1; // 新消息进入后，导航锚点回到"底部/未激活"
@@ -565,13 +565,13 @@
       totalCompletionTokens += c;
       const tps = c / seconds;
       aiRow.stats.textContent =
-        `Prompt: ${p} | Completion: ${c} | Total: ${t} | Speed: ${tps.toFixed(2)} tok/s | CumPrompt: ${totalPromptTokens} | CumCompletion: ${totalCompletionTokens}`;
+        `提示词: ${p} | 补全: ${c} | 总计: ${t} | 速度: ${tps.toFixed(2)} tok/s | 累计提示词: ${totalPromptTokens} | 累计补全: ${totalCompletionTokens}`;
     } else {
       const outEst = estimateTokens(full);
       totalOutEstimate += outEst;
       const tps = outEst / seconds;
       aiRow.stats.textContent =
-        `Output(估算): ≈${outEst} | Total Out(估算): ≈${totalOutEstimate} | Speed(估算): ${tps.toFixed(2)} tok/s | (usage未返回)`;
+        `输出(估算): ≈${outEst} | 累计输出(估算): ≈${totalOutEstimate} | 速度(估算): ${tps.toFixed(2)} tok/s | (未返回用量)`;
     }
   }
 
