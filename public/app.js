@@ -469,15 +469,23 @@
     let carryOver = "";
     let textBuffer = "";
     let flushRafId = null;
+    let autoScroll = true;
 
     const outStartMs = performance.now();
+
+    // 用户主动向上滚动时停止自动跟随
+    const onUserScroll = () => {
+      if (!autoScroll) return;
+      if (!isNearBottom()) autoScroll = false;
+    };
+    historyWrap.addEventListener("scroll", onUserScroll);
 
     const flushDOM = () => {
       flushRafId = null;
       if (textBuffer) {
         textNode.data += textBuffer;
         textBuffer = "";
-        if (isNearBottom()) scrollToBottom();
+        if (autoScroll) scrollToBottom();
       }
     };
 
@@ -552,6 +560,7 @@
       textNode.data += textBuffer;
       textBuffer = "";
     }
+    historyWrap.removeEventListener("scroll", onUserScroll);
 
     const outEndMs = performance.now();
     session.push({ role: "assistant", content: full });
