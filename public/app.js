@@ -434,6 +434,9 @@
     scrollToBottom();
 
     const aiRow = makeRow("assistant");
+    const textNode = document.createTextNode("");
+    aiRow.bubble.appendChild(textNode);
+
     let full = "";
     let exactUsage = null;
 
@@ -464,22 +467,21 @@
     const decoder = new TextDecoder();
 
     let carryOver = "";
+    let textBuffer = "";
     let flushRafId = null;
-    let pendingRender = false;
 
     const outStartMs = performance.now();
 
     const flushDOM = () => {
       flushRafId = null;
-      if (pendingRender) {
-        pendingRender = false;
-        aiRow.bubble.textContent = full;
+      if (textBuffer) {
+        textNode.data += textBuffer;
+        textBuffer = "";
         if (isNearBottom()) scrollToBottom();
       }
     };
 
     const scheduleFlush = () => {
-      pendingRender = true;
       if (!flushRafId) {
         flushRafId = requestAnimationFrame(flushDOM);
       }
@@ -498,6 +500,7 @@
         const delta = parsed.choices?.[0]?.delta?.content;
         if (delta) {
           full += delta;
+          textBuffer += delta;
           scheduleFlush();
         }
       } catch (err) {
@@ -545,9 +548,9 @@
       cancelAnimationFrame(flushRafId);
       flushRafId = null;
     }
-    if (pendingRender) {
-      pendingRender = false;
-      aiRow.bubble.textContent = full;
+    if (textBuffer) {
+      textNode.data += textBuffer;
+      textBuffer = "";
     }
 
     const outEndMs = performance.now();
