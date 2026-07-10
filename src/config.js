@@ -15,6 +15,8 @@ export const MODELS = [
   { id: "nvidia/llama-3.3-nemotron-super", label: "llama-3.3-nemotron-super", persona: 1 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 1 },
   { id: "mistralai/mistral-small-4-119b-2603", label: "mistral-small-4-119b-2603", persona: 1 },
+  { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra（快+强推理）", persona: 1 },
+  { id: "qwen/qwen3-next-80b-a3b-thinking", label: "qwen3-next-thinking（极速思考）", persona: 1 },
   { id: "mistralai/mistral-small-4-119b-2603", label: "无人物模板", persona: 3 },
 ];
 
