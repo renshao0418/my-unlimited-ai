@@ -15,7 +15,7 @@ export const MODELS = [
   { id: "nvidia/llama-3.3-nemotron-super", label: "llama-3.3-nemotron-super", persona: 1 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 1 },
   { id: "mistralai/mistral-small-4-119b-2603", label: "mistral-small-4-119b-2603", persona: 1 },
-  { id: "google/diffusiongemma-26b-a4b-it", label: "无人物模板", persona: 3 },
+  { id: "mistralai/mistral-small-4-119b-2603", label: "无人物模板", persona: 3 },
 ];
 
 // 内置人物模板 #1（glm-4.7-flash）——不会下发到网页
