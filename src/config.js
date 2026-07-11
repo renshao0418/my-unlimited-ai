@@ -15,7 +15,7 @@ export const MODELS = [
   { id: "nvidia/llama-3.3-nemotron-super", label: "llama-3.3-nemotron-super", persona: 1 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 1 },
   { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra（快+强推理）", persona: 1 },
-  { id: "qwen/qwen3-next-80b-a3b-instruct";, label: "qwen3-next（极速思考）", persona: 1 },
+  { id: "qwen/qwen3-next-80b-a3b-think";, label: "qwen3-next（极速思考）", persona: 1 },
   { id: "google/diffusiongemma-26b-a4b-it", label: "无人物模板", persona: 3 },
 ];
 
