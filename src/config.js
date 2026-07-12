@@ -12,10 +12,10 @@ export const DEFAULT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b";
 // 模型列表（label 是下拉显示；persona=1 使用 PROMPT_1；persona=2 使用 PROMPT_2）
 export const MODELS = [
   { id: "google/diffusiongemma-26b-a4b-it", label: "gemma", persona: 1 },
-  { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra-550b-a55b", persona: 1 },
+  { id: "minimaxai/minimax-m2.7", label: "minimaxai/minimax-m2.7", persona: 1 },
   { id: "z-ai/glm-5.2", label: "glm-5.2", persona: 1 },
   { id: "nvidia/nemotron-3-ultra-550b-a55b", label: "nemotron-3-ultra（快+强推理）", persona: 1 },
-  { id: "qwen/qwen3-next-80b-a3b-think";, label: "qwen3-next（极速思考）", persona: 1 },
+  { id: "qwen/qwen3.5-397b-a17b";, label: "qwen3（极速思考）", persona: 1 },
   { id: "google/diffusiongemma-26b-a4b-it", label: "无人物模板", persona: 3 },
 ];
 
